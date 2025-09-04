@@ -1,3 +1,17 @@
+function criarGetters(classe, atributos) {
+  for (const attr of atributos) {
+    classe.prototype[`get${attr[0].toUpperCase()}${attr.slice(1)}`] = function () {
+      return this[attr]
+    }
+    classe.prototype[`get${attr[0].toUpperCase()}${attr.slice(1)}Upper`] = function () {
+      return this[attr].toUpperCase()
+    }
+    classe.prototype[`get${attr[0].toUpperCase()}${attr.slice(1)}Lower`] = function () {
+      return this[attr].toLowerCase()
+    }
+  }
+}
+
 class Telefone {
   constructor(ddd, numero) {
     this.ddd = ddd
@@ -8,6 +22,8 @@ class Telefone {
     return `(${this.ddd}) ${this.numero}`
   }
 }
+
+criarGetters(Telefone, ["ddd", "numero"])
 
 class Endereco {
   constructor(rua, numero, cidade, estado) {
@@ -22,6 +38,8 @@ class Endereco {
   }
 }
 
+criarGetters(Endereco, ["rua", "numero", "cidade", "estado"])
+
 class Cliente {
   #cpf
   constructor(nome, cpf, endereco) {
@@ -33,6 +51,12 @@ class Cliente {
 
   getCpf() {
     return this.#cpf
+  }
+  getCpfUpper() {
+    return this.#cpf.toUpperCase()
+  }
+  getCpfLower() {
+    return this.#cpf.toLowerCase()
   }
 
   adicionarTelefone(telefone) {
@@ -50,13 +74,15 @@ class Cliente {
     }
 
     return `
-Nome: ${this.nome}
+Nome: ${this.getNome()}
 CPF: ${this.getCpf()}
 Endereço: ${this.endereco.toString()}
 Telefones: ${telefonesStr}
     `
   }
 }
+
+criarGetters(Cliente, ["nome"])
 
 class Empresa {
   #cnpj
@@ -70,11 +96,9 @@ class Empresa {
   getCnpj() {
     return this.#cnpj
   }
-
   getCnpjUpper() {
     return this.#cnpj.toUpperCase()
   }
-
   getCnpjLower() {
     return this.#cnpj.toLowerCase()
   }
@@ -85,8 +109,8 @@ class Empresa {
 
   detalhes() {
     let resultado = `
-Razão Social: ${this.razaoSocial}
-Nome Fantasia: ${this.nomeFantasia}
+Razão Social: ${this.getRazaoSocial()}
+Nome Fantasia: ${this.getNomeFantasia()}
 CNPJ: ${this.getCnpj()}
 -------------------------
 `
@@ -97,9 +121,11 @@ CNPJ: ${this.getCnpj()}
   }
 }
 
+criarGetters(Empresa, ["razaoSocial", "nomeFantasia"])
+
 const empresa = new Empresa("ABC LTDA", "Mercado Online", "12845678090199")
 
-const Joseane = new Cliente("Joseane", "7657905643", new Endereco("Bosque das Laranjeiras", "987", "Rio Verde", "GO"))
+const Joseane = new Cliente("Joseane", "7657905643", new Endereco("Bosque dos Laranjais", "987", "Rio Verde", "GO"))
 Joseane.adicionarTelefone(new Telefone("64", "99999-9999"))
 Joseane.adicionarTelefone(new Telefone("64", "3232-1111"))
 
@@ -107,9 +133,9 @@ const Fernanda = new Cliente("Fernanda", "987654337852", new Endereco("Parque Mo
 Fernanda.adicionarTelefone(new Telefone("64", "88888-8888"))
 Fernanda.adicionarTelefone(new Telefone("64", "3232-2222"))
 
-const Letícia = new Cliente("Letícia", "33567839133", new Endereco("Córrego do Sapo", "789", "Rio Verde", "GO"))
-Letícia.adicionarTelefone(new Telefone("64", "77777-7777"))
-Letícia.adicionarTelefone(new Telefone("64", "3232-3333"))
+const Leticia = new Cliente("Letícia", "33567839133", new Endereco("Córrego do Sapo", "789", "Rio Verde", "GO"))
+Leticia.adicionarTelefone(new Telefone("64", "77777-7777"))
+Leticia.adicionarTelefone(new Telefone("64", "3232-3333"))
 
 const Sara = new Cliente("Sara", "459444093844", new Endereco("Avenida Campestre", "452", "Rio Verde", "GO"))
 Sara.adicionarTelefone(new Telefone("64", "66666-6666"))
@@ -122,7 +148,7 @@ Bianca.adicionarTelefone(new Telefone("64", "3232-5555"))
 empresa.adicionarCliente(Sara)
 empresa.adicionarCliente(Fernanda)
 empresa.adicionarCliente(Joseane)
-empresa.adicionarCliente(Letícia)
+empresa.adicionarCliente(Leticia)
 empresa.adicionarCliente(Bianca)
 
 console.log(empresa.detalhes())
